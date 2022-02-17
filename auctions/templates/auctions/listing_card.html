@@ -1,0 +1,105 @@
+<!--Card container for single listing-->
+<div class="container">
+    <div class="card mb-3" style="max-width: 100vw;">
+        <div class="row g-0">
+            <div class="col-md-4 mt-3 mb-5">
+                <img src="{{listing.image.url}}" class="img-fluid rounded-start ml-3" alt="connect"
+                    style="width: 50%; height: 100%;">
+                    {% if request.user.is_authenticated %}
+                        <div class="ml-3 mt-2">
+                            <form method="POST" action="{% url 'watched_listing_item' listing.id %}" class="form-inline">
+                                {% csrf_token%}
+                                {% if listing in request.user.watchlist.all %}
+                                    <input class="btn btn-secondary btn-sm" type="submit" value="Remove from Watchlist" />
+                                {% else %}
+                                    <input class="btn btn-secondary btn-sm" type="submit" value="Add to Watchlist" />
+                                {% endif %}
+                            </form>
+                        </div>
+                    {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p>
+                        {% if listing.bids.all.count > 0 %}
+                            Starting Price: ${{ listing.start_bid }} | 
+                            Total Bids: {{listing.bids.all.count}} |
+                            Top Bid: {{ listing.bids.first }} 
+                        {% else %}
+                            Starting Price: ${{ listing.start_bid }} | 
+                            No Current Bids
+                        {% endif %}
+                    </p>
+                    <p class="card-text">{{listing.item_description}}</p>
+                    <p class="card-text">Listing closes on: {{listing.end_time}}</p>
+                    <p class="card-text">
+                        <small class="text-muted">Time Remaining: 
+                            {% if days %}
+                            {{days}}d
+                            {% endif %}
+                            
+                            {% if hours %}
+                            {{hours}}h 
+                            {% endif %}
+                            
+                            {% if minutes %}
+                            {{minutes}}m
+                            {% endif %}
+                            
+                            {% if request.user.is_authenticated %}
+                                <!--comment collapse link-->
+                                <a class="m-2" data-bs-toggle="collapse" 
+                                    href="#collapsecreatecomment" role="button" aria-expanded="false" 
+                                    aria-controls="collapsecreatecomment"> Leave a Comment
+                                </a>
+                                <!--comment collapse link-->
+
+                                <!--bid collapse link-->
+                                <a class="m-2" data-bs-toggle="collapse" 
+                                    href="#collapsecreatebid" role="button" aria-expanded="false" 
+                                    aria-controls="collapsecreatebid">Place a Bid
+                                </a>
+                                <!--bid collapse link-->
+
+                                {% if messages %}
+                                    <ul class="messages">
+                                        {% for message in messages %}
+                                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color:red;">{{ message }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+
+                                <!--bid collapse  form-->
+                                <div class="collapse mt-2" id="collapsecreatebid">
+                                    <form method="POST" action="{% url 'listing_bid' listing.id %}" class="form-inline">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            {{ bid_form }}
+                                            <input class="btn btn-outline-primary" type="submit" value="Place Bid" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--bid collapse form-->
+                            {% endif%}
+                        </small>
+                    </p>
+                    {% if listing.bids.first.user == request.user %}
+                        {% if not ended %}
+                            <div style="border: solid black 1px; height: 50%; width: 50%; padding: 4px">
+                                You currently have the highest bid:<br> <small>{{listing.bids.first}}</small>
+                            </div>
+                        {% else %}
+                            <b><span style="text-transform: uppercase;">{{request.user}}</span>, You Successfully Won this Listing!!</b>
+                        {% endif %}
+                    {% endif %}
+                    <!--comment list collapse link-->
+                    <a class="m-2" data-bs-toggle="collapse" 
+                        href="#collapselistcomment" role="button" aria-expanded="false" 
+                        aria-controls="collapselistcomment">{{listing.comments.count}} Comments
+                    </a>
+                    <!--comment list collapse link-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

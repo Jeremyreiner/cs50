@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="container">
+{% for listing in listings %}
+    <!--Closed Listings -->
+    {% if listing.bids.first.user == request.user%}
+            {% include 'auctions/listing_over_card.html' %}
+    {% endif %}
+{% endfor%}
+{% endblock %}
+

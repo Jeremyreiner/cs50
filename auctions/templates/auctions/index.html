@@ -1,0 +1,10 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="container">
+    <h2 class="text-center">{{title}}</h2>
+
+    <!--listings-->
+    {% include 'auctions/listings.html' %}
+</div>
+{% endblock %}

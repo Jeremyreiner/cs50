@@ -1,0 +1,34 @@
+<!--Final listing stats-->
+<div class="container">
+    <div class="card mb-3" style="max-width: 100vw;">
+        <div class="row g-0">
+            <div class="col-md-4 mt-3 mb-3">
+                <img src="{{listing.image.url}}" class="img-fluid rounded-start ml-3" alt="connect"
+                    style="width: 50%; height: 100%;">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p>
+                        {% if listing.bids.all.count > 0 %}
+                            Starting Price: ${{ listing.start_bid }} | 
+                            Total Bids: {{listing.bids.all.count}}
+                        {% else %}
+                            Starting Price: ${{ listing.start_bid }} | 
+                            No Bids Have Been Placed
+                        {% endif %}
+                    </p>
+                    <p class="card-text">{{listing.item_description}}</p>
+                    <p class="card-text">Listing <strong>closed</strong>: {{listing.end_time}}</p>
+                    <p class="card-text"><small class="text-muted">
+                            Time Remaining: 0:00
+                        </small>
+                    </p>
+                    {% if listing.bids.first.user == request.user %}
+                        <b><span style="text-transform: uppercase;">{{request.user}}</span>, You've Won This Listing!</b>
+                        <p>Final Bid: {{ listing.bids.first }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

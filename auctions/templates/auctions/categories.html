@@ -1,0 +1,32 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <div class="container-fluid">
+        <h4>Categories</h4>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">
+                        All Listings
+                    </a>
+                </li>
+                    {% for category in categories %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'categories' %}?category={{category.title}}">
+                                {{category.title}}
+                            </a>
+                        </li>
+                        {% empty %}<!--work on what happens if no entry in this category-->
+                        <h4>There is nothing in this list</h4>
+                    {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <!--listings-->
+    
+    {% include 'auctions/listings.html' %}
+</div>
+{% endblock body%}

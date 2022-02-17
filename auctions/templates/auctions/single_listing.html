@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+{% load mathfilters %}
+
+{% block title %} {{ listing.item_name }} {% endblock %}
+
+{% block body %}
+<h1 class="text-center"> {{ listing.item_name }}
+    {% if request.user == listing.user and not ended %}
+        <form method="POST" action= "{% url 'close_listing' listing.id %}">
+            {% csrf_token %}
+            <input class="btn btn-outline-danger" type="submit" value="Close Listing">
+        </form>
+    {% endif %}
+
+</h1>
+
+{% if ended %}
+    <!--final listing card-->
+    {% include 'auctions/listing_over_card.html' %}
+    <!--final listing card-->
+{% else %}
+    <!--Single listing card-->
+    {% include 'auctions/listing_card.html' %}
+    <!--Single listing card-->
+
+    <!--comment collapse form-->
+    <div class="container">
+        <div class="collapse mt-2" id="collapsecreatecomment">
+            <form method="POST" action="{% url 'listing_comment' listing.id %}" class="form-inline">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ comment_form.as_p }}
+                    <input class="btn btn-outline-primary" type="submit" value="Submit Comment">
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--comment collapse form-->
+    
+    <!--comment collapse list section-->
+    <div class="container">
+        <div class="collapse" id="collapselistcomment">
+            <ul class="list-group list-group-flush"><hr>
+                {% for comment in listing.comments.all %}
+                    <li class="list-group-item"><small>
+                        <p class="font-weight-bold">
+                            {{ comment.user }} 
+                            <span class=" text-muted font-weight-normal">
+                            {{ comment.time }}
+                            </span>
+                        </p></small>
+                        {{ comment.message | linebreaks }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <!--comment collapse list section-->
+{% endif %}
+{% endblock body %}
+
